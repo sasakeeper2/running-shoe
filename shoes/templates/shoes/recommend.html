@@ -1,0 +1,14 @@
+<h2>Find Your Perfect Running Shoe</h2>
+<form method="get">
+  {{ form.as_p }}
+  <button type="submit">Search</button>
+</form>
+
+<h3>Results:</h3>
+<ul>
+  {% for shoe in results %}
+    <li>{{ shoe.brand }} {{ shoe.model_name }} - {{ shoe.category }}</li>
+  {% empty %}
+    <li>No shoes found.</li>
+  {% endfor %}
+</ul>
