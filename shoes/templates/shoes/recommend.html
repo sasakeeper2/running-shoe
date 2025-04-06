@@ -1,128 +1,76 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Running Shoe Recommender</title>
   <style>
-    /* Reset & Base */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f2f5;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
       color: #333;
-      line-height: 1.6;
     }
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    /* Headings */
     h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: #2c3e50;
+      color: #2a7ae2;
+      margin-bottom: 10px;
     }
-    h3 {
-      margin-top: 2rem;
-      color: #34495e;
-    }
-
-    /* Form */
     form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 20px;
     }
     form p {
-      display: flex;
-      flex-direction: column;
-      font-weight: 500;
+      margin: 8px 0;
     }
-    form select,
-    form input[type="checkbox"] {
-      margin-top: 0.5rem;
-      padding: 0.5rem;
+    form input, form select {
+      padding: 6px;
+      width: 100%;
+      max-width: 300px;
       border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    form .form-row-full {
-      grid-column: 1 / -1;
+      border-radius: 3px;
     }
     button {
-      grid-column: 1 / -1;
-      padding: 0.75rem;
-      background: #3498db;
+      padding: 8px 16px;
+      background: #2a7ae2;
       color: #fff;
       border: none;
-      border-radius: 4px;
-      font-size: 1rem;
+      border-radius: 3px;
       cursor: pointer;
-      transition: background 0.2s ease-in-out;
+      margin-top: 10px;
     }
     button:hover {
-      background: #2980b9;
+      background: #1e5bb8;
     }
-
-    /* Results */
-    .results ul {
+    ul {
       list-style: none;
       padding: 0;
     }
-    .results li {
-      background: #fafafa;
-      margin-bottom: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-left: 4px solid #3498db;
-      border-radius: 4px;
+    li {
+      background: #fff;
+      margin-bottom: 8px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
     }
     .no-results {
-      text-align: center;
       color: #777;
       font-style: italic;
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      form {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Find Your Perfect Running Shoe</h2>
+  <h2>Find Your Perfect Running Shoe</h2>
+  <form method="get">
+    {{ form.as_p }}
+    <button type="submit">Search</button>
+  </form>
 
-    <form method="get">
-      {{ form.surface|as_widget(attrs={"class":"form-control"}) }}
-      {{ form.foot_strike|as_widget(attrs={"class":"form-control"}) }}
-      {{ form.cushioning|as_widget(attrs={"class":"form-control"}) }}
-      <p class="form-row-full">
-        <label for="{{ form.pronation_support.id_for_label }}">
-          {{ form.pronation_support }} Pronation Support
-        </label>
-      </p>
-      <button type="submit">Search</button>
-    </form>
-
-    <div class="results">
-      <h3>Results:</h3>
-      <ul>
-        {% for shoe in results %}
-          <li>{{ shoe.brand }} {{ shoe.model_name }} &mdash; {{ shoe.category }}</li>
-        {% empty %}
-          <li class="no-results">No shoes found. Try different criteria!</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
+  <h3>Results:</h3>
+  <ul>
+    {% for shoe in results %}
+      <li>{{ shoe.brand }} {{ shoe.model_name }} — {{ shoe.category }}</li>
+    {% empty %}
+      <li class="no-results">No shoes found.</li>
+    {% endfor %}
+  </ul>
 </body>
 </html>
 
