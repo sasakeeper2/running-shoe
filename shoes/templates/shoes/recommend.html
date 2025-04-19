@@ -2,75 +2,185 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Running Shoe Recommender</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f9f9f9;
+      font-family: 'Arial', sans-serif;
+      background: #f4f7fc;
       color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
     }
     h2 {
       color: #2a7ae2;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 24px;
+      text-align: center;
     }
     form {
       margin-bottom: 20px;
     }
     form p {
-      margin: 8px 0;
+      margin: 12px 0;
     }
     form input, form select {
-      padding: 6px;
+      padding: 10px;
       width: 100%;
       max-width: 300px;
       border: 1px solid #ccc;
-      border-radius: 3px;
+      border-radius: 4px;
+      font-size: 16px;
     }
     button {
-      padding: 8px 16px;
+      padding: 12px 20px;
       background: #2a7ae2;
-      color: #fff;
+      color: white;
       border: none;
-      border-radius: 3px;
+      border-radius: 4px;
+      font-size: 16px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 15px;
+      width: 100%;
+      max-width: 300px;
     }
     button:hover {
       background: #1e5bb8;
     }
+    h3 {
+      color: #333;
+      margin-top: 30px;
+      font-size: 20px;
+    }
     ul {
-      list-style: none;
       padding: 0;
+      list-style: none;
+      margin-top: 20px;
     }
     li {
       background: #fff;
-      margin-bottom: 8px;
-      padding: 10px;
+      margin-bottom: 12px;
+      padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 3px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    li:hover {
+      background: #f1f1f1;
+    }
+    li .shoe-name {
+      font-weight: bold;
+      color: #2a7ae2;
     }
     .no-results {
       color: #777;
       font-style: italic;
+      text-align: center;
+    }
+    .shoe-details {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+    .shoe-details .brand {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .shoe-details p {
+      margin: 5px 0;
+    }
+    .back-button {
+      padding: 10px 20px;
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      text-align: center;
+      display: block;
+      width: 100%;
+      max-width: 300px;
+    }
+    .back-button:hover {
+      background: #b0b0b0;
     }
   </style>
 </head>
 <body>
-  <h2>Find Your Perfect Running Shoe</h2>
-  <form method="get">
-    {{ form.as_p }}
-    <button type="submit">Search</button>
-  </form>
+  <div class="container">
+    <h2>Find Your Perfect Running Shoe</h2>
+    <form method="get">
+      {{ form.as_p }}
+      <button type="submit">Search</button>
+    </form>
 
-  <h3>Results:</h3>
-  <ul>
-    {% for shoe in results %}
-      <li>{{ shoe.brand }} {{ shoe.model_name }} — {{ shoe.category }}</li>
-    {% empty %}
-      <li class="no-results">No shoes found.</li>
-    {% endfor %}
-  </ul>
+    <h3>Results:</h3>
+    <ul>
+      {% for shoe in results %}
+        <li onclick="showShoeDetails('{{ shoe.brand }}', '{{ shoe.model_name }}', '{{ shoe.category }}', '{{ shoe.cushioning }}', '{{ shoe.stack_height }}', '{{ shoe.heel_to_toe_drop }}', '{{ shoe.best_for }}', '{{ shoe.surface }}', '{{ shoe.foot_strike }}', '{{ shoe.pronation_support }}')">
+          <div class="shoe-name">{{ shoe.model_name }}</div>  <!-- Display shoe name here -->
+        </li>
+      {% empty %}
+        <li class="no-results">No shoes found.</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Shoe details section -->
+    <div id="shoe-details" class="shoe-details">
+      <div class="brand"></div>
+      <p><strong>Model Name:</strong> <span id="model-name"></span></p>
+      <p><strong>Category:</strong> <span id="category"></span></p>
+      <p><strong>Cushioning:</strong> <span id="cushioning"></span></p>
+      <p><strong>Stack Height:</strong> <span id="stack-height"></span> mm</p>
+      <p><strong>Heel-to-Toe Drop:</strong> <span id="heel-to-toe-drop"></span> mm</p>
+      <p><strong>Best For:</strong> <span id="best-for"></span></p>
+      <p><strong>Surface:</strong> <span id="surface"></span></p>
+      <p><strong>Foot Strike:</strong> <span id="foot-strike"></span></p>
+      <p><strong>Pronation Support:</strong> <span id="pronation-support"></span></p>
+    </div>
+
+    <button class="back-button" onclick="window.history.back()">Back</button>
+  </div>
+
+  <script>
+    function showShoeDetails(brand, modelName, category, cushioning, stackHeight, heelToToeDrop, bestFor, surface, footStrike, pronationSupport) {
+      // Display shoe details in the modal
+      const shoeDetailsSection = document.getElementById('shoe-details');
+      shoeDetailsSection.style.display = 'block';  // Make the shoe details visible
+
+      // Update the shoe details dynamically
+      document.querySelector('.shoe-details .brand').textContent = brand;
+      document.getElementById('model-name').textContent = modelName;
+      document.getElementById('category').textContent = category;
+      document.getElementById('cushioning').textContent = cushioning;
+      document.getElementById('stack-height').textContent = stackHeight;
+      document.getElementById('heel-to-toe-drop').textContent = heelToToeDrop;
+      document.getElementById('best-for').textContent = bestFor;
+      document.getElementById('surface').textContent = surface;
+      document.getElementById('foot-strike').textContent = footStrike;
+      document.getElementById('pronation-support').textContent = pronationSupport ? 'Yes' : 'No';
+    }
+  </script>
 </body>
 </html>
-
